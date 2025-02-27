@@ -28,14 +28,3 @@ print(f"Using device: {device}")
 
 # Load dataset
 train_data, train_labels, test_data, test_labels = mnist_loader.load_data(data_root)
-
-# Convert to PyTorch tensors
-train_data = train_data.clone().detach()
-train_labels = train_labels.clone().detach()
-test_data = test_data.clone().detach()
-test_labels = test_labels.clone().detach()
-
-# train_data = torch.tensor(train_data, dtype=torch.float32, device=device)
-# train_labels = torch.tensor(train_labels, dtype=torch.long, device=device)
-# test_data = torch.tensor(test_data, dtype=torch.float32, device=device)
-# test_labels = torch.tensor(test_labels, dtype=torch.long, device=device)
