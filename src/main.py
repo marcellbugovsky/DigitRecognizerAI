@@ -1,3 +1,4 @@
+import torch.cuda
 import yaml
 
 # Load the config file
@@ -6,4 +7,5 @@ with open("config.yaml", "r") as file:
 
 DEVICE = config["device"]
 
-print(f"Using device: {DEVICE}")
+# Set device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
