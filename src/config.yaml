@@ -1,0 +1,23 @@
+# Device configuration
+device: "cuda"  # Change to "cpu" if no GPU is available
+
+# Dataset settings
+data_root: "./data"
+
+# Model architecture
+input_size: 784  # 28x28 images flattened
+hidden_sizes: [128, 64]  # Two hidden layers
+output_size: 10  # Digits 0-9
+
+# Training settings
+batch_size: 64
+epochs: 50
+initial_learning_rate: 0.1
+lr_decay_step: 10
+lr_decay_gamma: 0.5  # Reduce learning rate by 50% every 10 epochs
+
+# Model saving
+model_path: "saved_model.pth"
+
+# Logging settings
+print_every: 1  # Print training info every epoch
