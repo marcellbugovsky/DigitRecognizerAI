@@ -2,7 +2,7 @@
 device: "cuda"  # Change to "cpu" if no GPU is available
 
 # Dataset settings
-data_root: "./data"
+data_root: "../data"
 
 # Model architecture
 input_size: 784  # 28x28 images flattened

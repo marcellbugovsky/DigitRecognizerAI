@@ -5,6 +5,9 @@ venv/
 # Ignore PyCharm settings
 .idea/
 
+# Ignore Data files
+data/
+
 # Ignore compiled Python files
 __pycache__/
 *.pyc
