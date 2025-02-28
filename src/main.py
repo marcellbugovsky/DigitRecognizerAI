@@ -4,9 +4,10 @@ import torch.optim.lr_scheduler as lr_scheduler
 import mnist_loader
 import yaml
 import neural_network
+import train
 import os
 
-# Load config
+# Load config file
 with open("config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
@@ -24,12 +25,13 @@ initial_learning_rate = config["initial_learning_rate"]
 lr_decay_step = config["lr_decay_step"]
 lr_decay_gamma = config["lr_decay_gamma"]
 
-# Set device
+# Set device to cuda
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# Load dataset
-train_data, train_labels, test_data, test_labels = mnist_loader.load_data(data_root, device)
+# Initialize model
+model = neural_network.NeuralNetwork(input_size, hidden_sizes, output_size).to(device)
 
-model = neural_network.NeuralNetwork(input_size, hidden_sizes, output_size)
-print(model)
+train.train(model, device, data_root, batch_size, epochs, initial_learning_rate)
+
+train.evaluate(model, device, data_root, batch_size)
