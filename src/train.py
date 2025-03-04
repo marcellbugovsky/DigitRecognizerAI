@@ -39,7 +39,8 @@ def train(model, device, data_root, batch_size, epochs, learning_rate, lr_decay_
 
         scheduler.step()
 
-        print(f"Epoch {epoch + 1}/{epochs}, Loss: {running_loss / len(train_loader):.4f}, Accuracy: {correct / total:.4f}")
+        if epoch % print_every == 0:
+            print(f"Epoch {epoch + 1}/{epochs}, Loss: {running_loss / len(train_loader):.4f}, Accuracy: {correct / total:.4f}")
 
 def evaluate(model, device, data_root, batch_size):
     # Load dataset

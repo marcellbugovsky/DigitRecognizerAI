@@ -11,12 +11,16 @@ class NeuralNetwork(nn.Module):
 
         # Add input layer
         layers.append(nn.Linear(input_size, hidden_sizes[0]))
+        layers.append(nn.BatchNorm1d(hidden_sizes[0]))
         layers.append(nn.ReLU())
+        layers.append(nn.Dropout(0.2))
 
         # Add hidden layers
         for i in range(len(hidden_sizes) - 1):
             layers.append(nn.Linear(hidden_sizes[i], hidden_sizes[i + 1]))
+            layers.append(nn.BatchNorm1d(hidden_sizes[i+1]))
             layers.append(nn.ReLU())
+            layers.append(nn.Dropout(0.2))
 
         # Add output layer
         layers.append(nn.Linear(hidden_sizes[-1], output_size))

@@ -6,15 +6,15 @@ model_path: "../models/saved_model.pth"
 
 # Model architecture
 input_size: 784  # 28x28 images flattened
-hidden_sizes: [128, 64]  # Two hidden layers
+hidden_sizes: [512, 256, 128, 64]  # Two hidden layers
 output_size: 10  # Digits 0-9
 
 # Training settings
 batch_size: 64
-epochs: 20
+epochs: 100
 initial_learning_rate: 0.005
 lr_decay_step: 2
 lr_decay_gamma: 0.5  # Reduce learning rate by 50% every 10 epochs
 
 # Logging settings
-print_every: 1  # Print training info every epoch
+print_every: 5  # Print training info every epoch
