@@ -4,7 +4,7 @@ import torch.optim as optim
 import torch.utils.data as data
 import mnist_loader
 
-def train(model, device, data_root, batch_size, epochs, learning_rate):
+def train(model, device, data_root, batch_size, epochs, learning_rate, lr_decay_step, lr_decay_gamma, print_every):
     # Load dataset
     train_data, train_labels, test_data, test_labels = mnist_loader.load_data(data_root, device)
 
@@ -16,6 +16,8 @@ def train(model, device, data_root, batch_size, epochs, learning_rate):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=lr_decay_step, gamma=lr_decay_gamma)
+
     # Training loop
     for epoch in range(epochs):
         model.train()
@@ -25,7 +27,7 @@ def train(model, device, data_root, batch_size, epochs, learning_rate):
 
         for inputs, labels in train_loader:
             optimizer.zero_grad()
-            outputs = model(inputs)
+            outputs = model(inputs.float())
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
@@ -34,6 +36,8 @@ def train(model, device, data_root, batch_size, epochs, learning_rate):
             _, predicted = torch.max(outputs, 1)
             correct += (predicted == labels).sum().item()
             total += labels.size(0)
+
+        scheduler.step()
 
         print(f"Epoch {epoch + 1}/{epochs}, Loss: {running_loss / len(train_loader):.4f}, Accuracy: {correct / total:.4f}")
 

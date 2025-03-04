@@ -25,6 +25,8 @@ initial_learning_rate = config["initial_learning_rate"]
 lr_decay_step = config["lr_decay_step"]
 lr_decay_gamma = config["lr_decay_gamma"]
 
+print_every = config["print_every"]
+
 # Set device to cuda
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
@@ -32,6 +34,6 @@ print(f"Using device: {device}")
 # Initialize model
 model = neural_network.NeuralNetwork(input_size, hidden_sizes, output_size).to(device)
 
-train.train(model, device, data_root, batch_size, epochs, initial_learning_rate)
+train.train(model, device, data_root, batch_size, epochs, initial_learning_rate, lr_decay_step, lr_decay_gamma, print_every)
 
 train.evaluate(model, device, data_root, batch_size)
