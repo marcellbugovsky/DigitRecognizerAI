@@ -4,7 +4,6 @@ import torch.optim.lr_scheduler as lr_scheduler
 import mnist_loader
 import yaml
 import neural_network
-import train
 import os
 
 # Load config file
@@ -34,6 +33,5 @@ print(f"Using device: {device}")
 # Initialize model
 model = neural_network.NeuralNetwork(input_size, hidden_sizes, output_size).to(device)
 
-train.train(model, device, data_root, batch_size, epochs, initial_learning_rate, lr_decay_step, lr_decay_gamma, print_every)
-
-train.evaluate(model, device, data_root, batch_size)
+model.train_model(device, data_root, batch_size, epochs, initial_learning_rate, lr_decay_step, lr_decay_gamma, print_every)
+model.evaluate(device, data_root, batch_size)
