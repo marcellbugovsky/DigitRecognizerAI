@@ -35,3 +35,8 @@ model = neural_network.NeuralNetwork(input_size, hidden_sizes, output_size).to(d
 
 model.train_model(device, data_root, batch_size, epochs, initial_learning_rate, lr_decay_step, lr_decay_gamma, print_every)
 model.evaluate(device, data_root, batch_size)
+
+model.save_model(model_path)
+
+# model.load_model(model_path)
+# model.evaluate(device, data_root, batch_size)

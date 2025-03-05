@@ -33,6 +33,17 @@ class NeuralNetwork(nn.Module):
     def forward(self, x):
         return self.model(x)
 
+    def save_model(self, file_path):
+        # Saves the model state to a file
+        torch.save(self.state_dict(), file_path)
+        print(f"Model saved to {file_path}")
+
+    def load_model(self, file_path):
+        # Loads the model state from a file
+        self.load_state_dict(torch.load(file_path))
+        self.eval()
+        print(f"Model loaded from {file_path}")
+
     def train_model(self, device, data_root, batch_size, epochs, learning_rate, lr_decay_step, lr_decay_gamma, print_every):
         # Load dataset
         train_data, train_labels, test_data, test_labels = mnist_loader.load_data(data_root, device)
