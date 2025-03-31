@@ -45,60 +45,86 @@ class NeuralNetwork(nn.Module):
         print(f"Model loaded from {file_path}")
 
     def train_model(self, device, data_root, batch_size, epochs, learning_rate, lr_decay_step, lr_decay_gamma, print_every):
-        # Load dataset
-        train_data, train_labels, test_data, test_labels = mnist_loader.load_data(data_root, device)
+        # --- CHANGE HERE ---
+        # Load dataset OBJECTS
+        train_dataset_obj, _ = mnist_loader.load_data(data_root) # Get the training Dataset object
 
-        # Convert to DataLoader
-        train_dataset = data.TensorDataset(train_data, train_labels)
-        train_loader = data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+        # Create DataLoader directly from the MNIST Dataset object
+        train_loader = data.DataLoader(train_dataset_obj, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True) # Added num_workers and pin_memory for potential speedup
 
         # Loss function and optimizer
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(self.parameters(), lr=learning_rate)
-
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=lr_decay_step, gamma=lr_decay_gamma)
 
+        print("Starting training...")
         # Training loop
         for epoch in range(epochs):
-            self.train()
+            self.train() # Set model to training mode
             running_loss = 0.0
             correct = 0
             total = 0
 
-            for inputs, labels in train_loader:
+            # DataLoader now yields (image_tensor, label_int) pairs
+            for i, (inputs, labels) in enumerate(train_loader):
+                inputs, labels = inputs.to(device), labels.to(device) # Move data to device
+
                 optimizer.zero_grad()
-                outputs = self(inputs.float())
+
+                # Flatten the input image (28x28 -> 784) for the Linear layer
+                outputs = self(inputs.view(inputs.size(0), -1).float())
+
                 loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()
 
                 running_loss += loss.item()
-                _, predicted = torch.max(outputs, 1)
+                _, predicted = torch.max(outputs.data, 1)
                 correct += (predicted == labels).sum().item()
                 total += labels.size(0)
 
-            scheduler.step()
+                # Optional: Print batch progress
+                # if (i + 1) % 100 == 0:
+                #     print(f'Epoch [{epoch+1}/{epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}')
 
-            if epoch % print_every == 0:
+
+            scheduler.step() # Step the scheduler once per epoch
+
+            epoch_loss = running_loss / len(train_loader)
+            epoch_accuracy = correct / total
+
+            # Print epoch summary
+            if (epoch + 1) % print_every == 0 or (epoch + 1) == epochs:
                 print(
-                    f"Epoch {epoch + 1}/{epochs}, Loss: {running_loss / len(train_loader):.4f}, Accuracy: {correct / total:.4f}")
+                    f"Epoch {epoch + 1}/{epochs} completed | Loss: {epoch_loss:.4f}, Accuracy: {epoch_accuracy:.4f}")
+
+        print("Training finished.")
+        # Consider saving the model here if needed, or ensure it's saved in main.py after call
+        # self.save_model(model_path) # Needs model_path variable
 
     def evaluate(self, device, data_root, batch_size):
-        # Load dataset
-        train_data, train_labels, test_data, test_labels = mnist_loader.load_data(data_root, device)
+        # --- CHANGE HERE ---
+        # Load dataset OBJECTS
+        _, test_dataset_obj = mnist_loader.load_data(data_root) # Get the test Dataset object
 
-        # Convert to DataLoader
-        test_dataset = data.TensorDataset(test_data, test_labels)
-        test_loader = data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+        # Create DataLoader directly from the MNIST Dataset object
+        test_loader = data.DataLoader(test_dataset_obj, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True)
 
-        self.eval()
+        print("Starting evaluation...")
+        self.eval() # Set model to evaluation mode
         correct = 0
         total = 0
-        with torch.no_grad():
+        with torch.no_grad(): # Disable gradient calculations
             for inputs, labels in test_loader:
-                outputs = self(inputs)
-                _, predicted = torch.max(outputs, 1)
+                inputs, labels = inputs.to(device), labels.to(device) # Move data to device
+
+                # Flatten the input image
+                outputs = self(inputs.view(inputs.size(0), -1).float())
+
+                _, predicted = torch.max(outputs.data, 1)
                 correct += (predicted == labels).sum().item()
                 total += labels.size(0)
 
-        print(f"Test Accuracy: {correct / total:.4f}")
+        accuracy = correct / total
+        print(f"Test Accuracy: {accuracy:.4f}")
+        # return accuracy # Optional: return value if needed
