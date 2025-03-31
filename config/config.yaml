@@ -1,0 +1,61 @@
+# --- File Paths ---
+# Root directory for storing downloaded datasets like MNIST
+data_root: "../data"
+# Root directory where user-drawn digits are saved/loaded
+custom_data_root: "../data/custom_digits"
+# Directory to save/load model checkpoints
+model_save_dir: "../models"
+# Basename for the model files
+model_basename: "mnist_mlp" # Will result in mnist_mlp.pth, mnist_mlp_finetuned.pth
+
+# --- Model Architecture ---
+model:
+  type: "MLP" # Could allow switching models later
+  input_size: 784
+  hidden_sizes: [512, 256, 128, 64]
+  output_size: 10
+  dropout: 0.2
+  use_batchnorm: True
+
+# --- Data Loading ---
+data_loader:
+  batch_size: 64
+  num_workers: 4 # Set to 0 if multiprocessing causes issues
+
+# --- Initial Training ---
+training:
+  # Set to true to include custom data alongside MNIST during initial training
+  use_custom_data: false
+  epochs: 20
+  learning_rate: 0.005
+  optimizer: "Adam" # Could add options like SGD later
+  scheduler:
+    use: True
+    type: "StepLR"
+    step_size: 2
+    gamma: 0.5
+  # How often to print training progress (epochs)
+  log_interval: 1
+
+# --- Fine-tuning on Custom Data ---
+fine_tuning:
+  # Suffix added to model_basename for the fine-tuned model
+  output_suffix: "_finetuned"
+  epochs: 15
+  learning_rate: 0.001 # Typically lower for fine-tuning
+  batch_size: 32 # Can override main batch_size
+  optimizer: "Adam"
+  scheduler:
+    use: False # Often scheduler is not used or adjusted for fine-tuning
+  log_interval: 1
+
+# --- GUI Settings ---
+gui:
+  # Which model file suffix to load ('', '_finetuned', etc.)
+  model_suffix_to_load: "_finetuned"
+  window_title: "Digit Recognizer AI"
+  canvas_width: 280
+  canvas_height: 280
+  brush_size: 7
+  # Temperature scaling for softmax in prediction (higher = less confident)
+  prediction_temperature: 1.5 # Adjusted from 2.0
