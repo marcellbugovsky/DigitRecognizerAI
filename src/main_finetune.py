@@ -21,7 +21,7 @@ def run_fine_tuning(config):
         print("No valid custom data found for fine-tuning. Exiting.")
         return
 
-    # You might want a small validation set from custom data, or evaluate on MNIST test set later
+    # We might want a small validation set from custom data, or evaluate on MNIST test set later
     # For simplicity here, we'll just train on all custom data and maybe eval on MNIST test
 
     # --- Model ---
