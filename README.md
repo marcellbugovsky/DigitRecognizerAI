@@ -29,33 +29,6 @@ Dieses Projekt implementiert ein End-to-End-System für die Erkennung handgeschr
     * Pillow (PIL) (für Bildverarbeitung in der GUI)
     * NumPy (implizit durch PyTorch)
 
-## Projektstruktur
-
-├── config/
-│   └── config.yaml         # Konfigurationsdatei
-├── data/                   # Wird für MNIST & Custom Data erstellt
-│   └── custom_digits/      # Speicherort für GUI-gezeichnete Ziffern
-├── models/                 # Wird für gespeicherte Modell-Checkpoints erstellt
-├── src/
-│   ├── data/               # Datenlader, Datasets, Transformationen
-│   │   ├── datasets.py
-│   │   ├── loader.py
-│   │   └── transforms.py
-│   ├── gui/                # Code für die grafische Oberfläche
-│   │   ├── app.py
-│   │   └── predictor.py
-│   ├── models/             # Modelldefinitionen
-│   │   └── mlp.py
-│   ├── training/           # Trainingslogik
-│   │   └── trainer.py
-│   ├── utils/              # Hilfsfunktionen
-│   │   └── device.py
-│   ├── main_finetune.py    # Skript für das Fine-Tuning
-│   ├── main_train.py       # Skript für das initiale Training
-│   └── run_gui.py          # Skript zum Starten der GUI
-├── requirements.txt        # Projekt-Abhängigkeiten (muss erstellt werden)
-└── README.md               # Diese Datei
-
 ## Setup & Installation
 
 1.  **Repository klonen:**
